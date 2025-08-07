@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { ThreeEvent, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useEditor, FaceData } from './EditorContext';
 
@@ -12,11 +12,11 @@ interface InteractiveFaceProps {
 export function InteractiveFace({ face }: InteractiveFaceProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
-  const { 
-    selectedFace, 
-    setSelectedFace, 
-    highlightFace, 
-    editMode 
+  const {
+    selectedFace,
+    setSelectedFace,
+    highlightFace,
+    editMode
   } = useEditor();
 
   const isSelected = selectedFace === face.id;
@@ -24,25 +24,25 @@ export function InteractiveFace({ face }: InteractiveFaceProps) {
 
   const geometry = React.useMemo(() => {
     const geom = new THREE.BufferGeometry();
-    const vertices = new Float32Array(9); 
-    
+    const vertices = new Float32Array(9);
+
     if (face.vertices.length >= 3) {
       vertices[0] = face.vertices[0].x;
       vertices[1] = face.vertices[0].y;
       vertices[2] = face.vertices[0].z;
-      
+
       vertices[3] = face.vertices[1].x;
       vertices[4] = face.vertices[1].y;
       vertices[5] = face.vertices[1].z;
-      
+
       vertices[6] = face.vertices[2].x;
       vertices[7] = face.vertices[2].y;
       vertices[8] = face.vertices[2].z;
     }
-    
+
     geom.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
     geom.computeVertexNormals();
-    
+
     return geom;
   }, [face.vertices]);
 
@@ -54,7 +54,7 @@ export function InteractiveFace({ face }: InteractiveFaceProps) {
     }
   };
 
-  const handlePointerOver = (event: any) => {
+  const handlePointerOver = (event: ThreeEvent<PointerEvent>) => {
     event.stopPropagation();
     setHovered(true);
     if (editMode === 'face') {
@@ -76,10 +76,10 @@ export function InteractiveFace({ face }: InteractiveFaceProps) {
     }
   });
 
-  const materialColor = isSelected 
-    ? '#fbbf24' 
-    : isHighlighted 
-      ? '#60a5fa' 
+  const materialColor = isSelected
+    ? '#fbbf24'
+    : isHighlighted
+      ? '#60a5fa'
       : face.color;
 
   const opacity = editMode === 'face' ? 0.9 : 0.7;

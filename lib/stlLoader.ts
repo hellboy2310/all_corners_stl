@@ -47,12 +47,8 @@ export function parseSTL(stlContent: string): STLFace[] {
 
 export async function loadSTLFile(filePath: string): Promise<STLFace[]> {
   try {
-    console.log('Fetching STL file from:', filePath);
     const response = await fetch(filePath);
-    console.log('Response status:', response.status);
     const stlContent = await response.text();
-    console.log('STL content length:', stlContent.length);
-    console.log('STL content preview:', stlContent.substring(0, 200));
     return parseSTL(stlContent);
   } catch (error) {
     console.error('Error loading STL file:', error);

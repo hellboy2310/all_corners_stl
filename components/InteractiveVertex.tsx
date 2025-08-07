@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { ThreeEvent, useFrame, useThree } from '@react-three/fiber';
 import { useDrag } from '@use-gesture/react';
 import * as THREE from 'three';
 import { useEditor, VertexData } from './EditorContext';
@@ -15,13 +15,13 @@ export function InteractiveVertex({ vertex }: InteractiveVertexProps) {
   const [hovered, setHovered] = useState(false);
   const [dragging, setDragging] = useState(false);
   const { camera, gl } = useThree();
-  
-  const { 
-    selectedVertex, 
-    setSelectedVertex, 
-    highlightVertex, 
+
+  const {
+    selectedVertex,
+    setSelectedVertex,
+    highlightVertex,
     updateVertexPosition,
-    editMode 
+    editMode
   } = useEditor();
 
   const isSelected = selectedVertex === vertex.id;
@@ -31,22 +31,22 @@ export function InteractiveVertex({ vertex }: InteractiveVertexProps) {
   const bind = useDrag(
     ({ active, movement: [x, y], memo = vertex.position.clone() }) => {
       if (editMode !== 'vertex') return memo;
-      
+
       setDragging(active);
-      
+
       if (active && meshRef.current) {
         const newPosition = memo.clone();
         newPosition.x += x * 0.02;
         newPosition.y -= y * 0.02;
-        
+
         updateVertexPosition(vertex.id, newPosition);
-        
+
         return newPosition;
       }
-      
+
       return memo;
     },
-    { 
+    {
       enabled: editMode === 'vertex',
       pointer: { capture: false }
     }
@@ -60,7 +60,7 @@ export function InteractiveVertex({ vertex }: InteractiveVertexProps) {
     }
   };
 
-  const handlePointerOver = (event: any) => {
+  const handlePointerOver = (event: ThreeEvent<PointerEvent>) => {
     event.stopPropagation();
     setHovered(true);
     if (isVisible) {
@@ -86,12 +86,12 @@ export function InteractiveVertex({ vertex }: InteractiveVertexProps) {
 
   if (!isVisible) return null;
 
-  const sphereColor = dragging 
-    ? '#ef4444' 
-    : isSelected 
-      ? '#fbbf24' 
-      : isHighlighted 
-        ? '#60a5fa' 
+  const sphereColor = dragging
+    ? '#ef4444'
+    : isSelected
+      ? '#fbbf24'
+      : isHighlighted
+        ? '#60a5fa'
         : '#8b5cf6';
 
   return (
@@ -101,7 +101,7 @@ export function InteractiveVertex({ vertex }: InteractiveVertexProps) {
       onClick={handleClick}
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
-      {...bind()}
+      {...(bind() as unknown as JSX.IntrinsicElements['mesh'])}
     >
       <sphereGeometry args={[0.05, 16, 16]} />
       <meshLambertMaterial

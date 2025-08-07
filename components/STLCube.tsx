@@ -20,10 +20,7 @@ export function STLCube() {
     const loadSTL = async () => {
       try {
         setLoading(true);
-        console.log('Loading STL file from /cube.stl...');
         const stlData = await loadSTLFile('/cube.stl');
-        console.log('STL data loaded:', stlData.length, 'faces');
-        console.log('First face:', stlData[0]);
         setStlFaces(stlData);
         
         const geom = new THREE.BufferGeometry();
@@ -136,17 +133,14 @@ export function STLCube() {
 
   return (
     <group>
-      {/* Render interactive faces */}
       {faces.map((face) => (
         <InteractiveFace key={face.id} face={face} />
       ))}
       
-      {/* Render interactive vertices */}
       {vertices.map((vertex) => (
         <InteractiveVertex key={vertex.id} vertex={vertex} />
       ))}
       
-      {/* Render edge helpers */}
       <EdgeHelper faces={faces} />
     </group>
   );
