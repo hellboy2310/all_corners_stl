@@ -7,7 +7,7 @@ import { useEditor } from './EditorContext';
 import { InteractiveFace } from './InteractiveFace';
 import { InteractiveVertex } from './InteractiveVertex';
 import { EdgeHelper } from './EdgeHelper';
-import { loadSTLFile, STLFace } from '@/lib/stlLoader';
+import { loadSTLFile, STLFace} from '@/lib/stlLoader';
 
 export function STLCube() {
   const meshRef = useRef<THREE.Mesh>(null);
